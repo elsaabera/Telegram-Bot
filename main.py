@@ -19,7 +19,7 @@ if TELEGRAM_TOKEN is None or GEMINI_API_KEY is None:
 
 # --- File for chat history ---
 CHAT_HISTORY_FILE = "chat_history.json"
-MAX_MESSAGES = 20  # store last 20 per user
+MAX_MESSAGES = 20  # store last 20 messages per user
 
 # --- Gemini Client ---
 client = genai.Client(api_key=GEMINI_API_KEY)
@@ -42,11 +42,9 @@ def save_chat_history():
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.effective_chat.id)
-
     if chat_id not in chat_history:
         chat_history[chat_id] = []
-
-    await update.message.reply_text("Hello!  I am your bot. How can I help you today?")
+    await update.message.reply_text("Hello! I am your bot. How can I help you today?")
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -61,7 +59,7 @@ async def reset_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.effective_chat.id)
     chat_history[chat_id] = []
     save_chat_history()
-    await update.message.reply_text(" Chat history cleared!")
+    await update.message.reply_text("✅ Chat history cleared!")
 
 # -------------------------------
 # AI Reply
@@ -69,23 +67,23 @@ async def reset_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ai_reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.effective_chat.id)
-    text = update.message.text.lower()
     user_text = update.message.text
+    text_lower = user_text.lower()
 
     if chat_id not in chat_history:
         chat_history[chat_id] = []
 
     # Quick replies
-    if any(g in text for g in ["hi", "hello", "hey"]):
-        await update.message.reply_text("Hey!  What’s up?")
+    if any(g in text_lower for g in ["hi", "hello", "hey"]):
+        await update.message.reply_text("Hey! What’s up?")
         return
 
-    if any(g in text for g in ["bye", "goodbye", "see you"]):
-        await update.message.reply_text("Goodbye! ")
+    if any(g in text_lower for g in ["bye", "goodbye", "see you"]):
+        await update.message.reply_text("Goodbye! 👋")
         return
 
-    if "how are you" in text:
-        await update.message.reply_text("I'm doing great! Thanks for asking ")
+    if "how are you" in text_lower:
+        await update.message.reply_text("I'm doing great! Thanks for asking 😊")
         return
 
     # Add user message to history
@@ -116,12 +114,13 @@ async def ai_reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
+    # Add handlers
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("reset", reset_command))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, ai_reply))
 
-    print(" Bot is running...")
+    print("🤖 Bot is running...")
     app.run_polling()
 
 if __name__ == "__main__":
