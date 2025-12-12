@@ -59,7 +59,7 @@ async def reset_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.effective_chat.id)
     chat_history[chat_id] = []
     save_chat_history()
-    await update.message.reply_text("✅ Chat history cleared!")
+    await update.message.reply_text(" Chat history cleared!")
 
 # -------------------------------
 # AI Reply
