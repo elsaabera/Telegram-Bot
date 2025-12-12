@@ -1,0 +1,12 @@
+# Python virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Chat history / sensitive data
+chat_history.json
+
+# Environment variables file (if you use one)
+.env
